@@ -1,2 +1,2 @@
 # antennas-cw
-requires numpy
+requires numpy and matplotlib
