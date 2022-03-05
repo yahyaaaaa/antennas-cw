@@ -1,1 +1,2 @@
 # antennas-cw
+requires numpy
