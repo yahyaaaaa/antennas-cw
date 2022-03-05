@@ -64,17 +64,17 @@ T_R = (cable.temp + lna.temp)/cable.gain + (filter.temp)/(cable.gain * lna.gain 
 N_0 = kB * B * G_R * (Ta + T_R) # output noise power in W
 P_r = ratio(dB(N_0) + SNR) / G_R # required received signal power in W
 G_r = dB(P_r) - EIRP + L_a + L_p # antenna gain in dB
-d_r = (c/(f * np.pi)) * np.sqrt(ratio(G_r)/0.7) # diameter, aperture efficiency = 55% 
+d_r = (c/(f * np.pi)) * np.sqrt(ratio(G_r)/0.7) # diameter, aperture efficiency = 70% 
 
 r = lambda x : round(x, 4 - int(np.floor(np.log10(abs(x)))) - 1) # rounding lambda function
 
 #system = [cable, lna, filter, mixer, if_amp]
 #for c in system:
 #    print(c.gain_dB, r(c.gain), c.nf, round(c.temp))
-
-print(f"""receiver temperature      T_R = {round(T_R)} K
-receiver gain             G_R = {r(dB(G_R))} dB
-receiver noise power      N_r = {r(dB(N_0/G_R))} dBW
-required signal power     P_r = {r(dB(P_r))} dBW
-antenna gain              G_r = {r(G_r)} dB
-antenna diameter          d_r = {r(d_r)} m""")
+if __name__ == '__main__':
+    print(f"""receiver temperature      T_R = {round(T_R)} K
+    receiver gain             G_R = {r(dB(G_R))} dB
+    receiver noise power      N_r = {r(dB(N_0/G_R))} dBW
+    required signal power     P_r = {r(dB(P_r))} dBW
+    antenna gain              G_r = {r(G_r)} dB
+    antenna diameter          d_r = {r(d_r)} m""")
