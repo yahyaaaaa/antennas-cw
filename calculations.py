@@ -68,10 +68,12 @@ d_r = (c/(f * np.pi)) * np.sqrt(ratio(G_r)/0.7) # diameter, aperture efficiency 
 
 r = lambda x : round(x, 4 - int(np.floor(np.log10(abs(x)))) - 1) # rounding lambda function
 
-#system = [cable, lna, filter, mixer, if_amp]
-#for c in system:
-#    print(c.gain_dB, r(c.gain), c.nf, round(c.temp))
 if __name__ == '__main__':
+
+#    system = [cable, lna, filter, mixer, if_amp]
+#    for c in system:
+#    print(c.gain_dB, r(c.gain), c.nf, round(c.temp))
+
     print(f"""receiver temperature      T_R = {round(T_R)} K
     receiver gain             G_R = {r(dB(G_R))} dB
     receiver noise power      N_r = {r(dB(N_0/G_R))} dBW
