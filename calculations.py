@@ -22,6 +22,7 @@ class component:
 
 
 # physical properties
+
 c = 299792458 # speed of light
 kB = 1.38E-23 # boltzmann's constant
 Ti = 298 # ambient temp
@@ -29,12 +30,12 @@ Ta = 151.8 # antenna temp
 
 # system properties
 
-SNR = 9 # required SNR in dB
+SNR_dB = 9 # required SNR in dB
 f = 11.634E9 # operating frequency
 B = 26E6 # system bandwidth
-EIRP = 51 # EIRP in dBW
-L_a = 1.50 # rain attenuation in dB
-L_p = 205.5 # path_loss in dB
+EIRP_dBW = 51 # EIRP in dBW
+L_a_dB = 1.50 # rain attenuation in dB
+L_p_dB = 205.5 # path_loss in dB
 
 # lna properties
 # https://eu.mouser.com/datasheet/2/412/cmd320c3_ver_a_0320-1843031.pdf
@@ -50,7 +51,7 @@ if_nf = 0.57 # if amp noise figure in dB
 
 # initialising components
 
-cable = component(-0.5, 0.5, Ti, False)
+cable = component(-0.5, 0.5, Ti, False) # cable.gain = 1/L
 lna = component(lna_gain_dB, lna_nf, Ti, True)
 filter = component(-0.5, 0.5, Ti, False)
 mixer = component(-6.5, 6.5, Ti, True)
@@ -59,12 +60,12 @@ if_amp = component(if_gain_dB, if_nf, Ti, True)
 # calculations
 
 G_R = cable.gain * lna.gain * filter.gain * mixer.gain * if_amp.gain # receiver gain
-T_R = (cable.temp + lna.temp)/cable.gain + (filter.temp)/(cable.gain * lna.gain * filter.gain) + (mixer.temp + if_amp.temp)/(cable.gain * lna.gain * filter.gain * mixer.gain) # receiver temp
+T_R = (cable.temp + lna.temp)/cable.gain + (filter.temp + mixer.temp)/(cable.gain * lna.gain * filter.gain) + (if_amp.temp)/(cable.gain * lna.gain * filter.gain * mixer.gain) # receiver temp
 
 N_0 = kB * B * G_R * (Ta + T_R) # output noise power in W
-P_r = ratio(dB(N_0) + SNR) / G_R # required received signal power in W
-G_r = dB(P_r) - EIRP + L_a + L_p # antenna gain in dB
-d_r = (c/(f * np.pi)) * np.sqrt(ratio(G_r)/0.7) # diameter, aperture efficiency = 70% 
+P_r = ratio(dB(N_0) + SNR_dB) / G_R # required received signal power in W
+G_r_dB = dB(P_r) - EIRP_dBW + L_a_dB + L_p_dB # antenna gain in dB
+d_r = (c/(f * np.pi)) * np.sqrt(ratio(G_r_dB)/0.65) # diameter, aperture efficiency = 65% 
 
 r = lambda x : round(x, 4 - int(np.floor(np.log10(abs(x)))) - 1) # rounding lambda function
 
@@ -72,11 +73,11 @@ if __name__ == '__main__':
 
 #    system = [cable, lna, filter, mixer, if_amp]
 #    for c in system:
-#    print(c.gain_dB, r(c.gain), c.nf, round(c.temp))
+#        print(c.gain_dB, r(c.gain), c.nf, round(c.temp))
 
     print(f"""receiver temperature      T_R = {round(T_R)} K
-    receiver gain             G_R = {r(dB(G_R))} dB
-    receiver noise power      N_r = {r(dB(N_0/G_R))} dBW
-    required signal power     P_r = {r(dB(P_r))} dBW
-    antenna gain              G_r = {r(G_r)} dB
-    antenna diameter          d_r = {r(d_r)} m""")
+receiver gain             G_R = {r(dB(G_R))} dB
+receiver noise power      N_r = {r(dB(N_0/G_R))} dBW
+required signal power     P_r = {r(dB(P_r))} dBW
+antenna gain              G_r = {r(G_r_dB)} dB
+antenna diameter          d_r = {r(d_r) * 100} cm""")
