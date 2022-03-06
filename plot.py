@@ -1,4 +1,3 @@
-from re import X
 import matplotlib.pyplot as plt
 import numpy as np
 from calculations import *
